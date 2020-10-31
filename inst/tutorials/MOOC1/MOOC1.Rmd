@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
+
 ## Les valeurs *p*
 De nombreuses trouvailles scientifiques sont douteuses et invitent au scepticisme. Nous pourrions citer les travaux de Lyssenko, ce biologiste russe qui promettait de merveilleuses récoltes grâce à un processus douteux et peu réplicable : la vernalisation. Ou encore le phénomène de fusion à froid qui propose qu’une fusion atomique pourrait se faire à température ambiante. Ou l’exemple très controversé de Bem (2011) qui propose que les individus sont capables de prédire l’avenir.
 
