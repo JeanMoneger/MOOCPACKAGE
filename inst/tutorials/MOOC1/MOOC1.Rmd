@@ -1,0 +1,178 @@
+---
+title: "Exercice 1 - Introduction aux Mauvaises Pratiques de Recherche"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Les valeurs *p*
+De nombreuses trouvailles scientifiques sont douteuses et invitent au scepticisme. Nous pourrions citer les travaux de Lyssenko, ce biologiste russe qui promettait de merveilleuses récoltes grâce à un processus douteux et peu réplicable : la vernalisation. Ou encore le phénomène de fusion à froid qui propose qu’une fusion atomique pourrait se faire à température ambiante. Ou l’exemple très controversé de Bem (2011) qui propose que les individus sont capables de prédire l’avenir.
+
+Les mauvaises pratiques de recherche contribuent grandement à la mise en évidence d’effets qui n’existent probablement pas. En effet, traiter avec trop de flexibilité les données peut faire enfler le risque d’erreur de type I : le fait de détecter un effet qui en réalité n’existe pas, ou faux positif.
+Dans leurs inférences, la plupart des chercheurs utilisant le cadre du Null Hypothesis Statistical Testing (NHST) utilisent la fameuse valeur p pour décider si ils rejetteront ou non l’hypothèse nulle : l’hypothèse énonçant qu’aucun effet n’existe. 
+La valeur p correspond à la probabilité d’observer une différence/un effet d’une taille similaire à celle observée ou plus grande encore, sachant que l’hypothèse nulle est vraie (i.e., il n’y a pas de différences en réalité).
+Plus la p-value est petite, moins il est probable d’observer un effet aussi grand ou égal à l’effet observé, en partant du principe que pourtant l’effet n’existe pas ! À petite valeur p, le chercheur sera donc tenté de rejeter l’hypothèse nulle et de conclure : Eurêka !
+
+Mais à partir de quelle probabilité p, le chercheur prendra le risque de rejeter l’hypothèse nulle ? Car rejeter l’hypothèse nulle, c’est bien justement prendre le risque de conclure mon effet existe, alors qu’en fait non.
+
+Notons ici qu’il existe deux interprétation majeure de la p-value : la perspective Fischerienne et la perspective de Neyman-Pearson. Nous aborderons un peu plus ces deux perspectives dans une autre partie de ce MOOC. Mais tenons nous en à dire que nous allons adopter la plupart du temps (sauf quand je préciserai le contraire) la perspective de Neyman-Pearson qui est centrée sur le contrôle de l’erreur statistique.
+
+Dans cette perspective, le risque d’erreur de type I (risque de faire un faux positif) est limité par le seuil alpha. Quand la valeur p sera plus faible que ce seuil alpha fixé préalablement, alors le chercheur pourra rejeter l’hypothèse nulle et pourra même déclarer que « Dans le long terme, les réplications de mon effet rejetteront l’hypothèse nulle la plupart du temps ». La proportions d’études qui répliqueront l’effet dans le long terme dépend de la valeur du seuil alpha fixé par le chercheur.
+
+Conventionnellement, on le fixe à 5% : on ne prendrons le risque de rejeter l’hypothèse nulle qu’à partir du moment où il y a moins de 5% de chance d’observer un effet aussi grand ou égal à celui que nous avons observé alors que pourtant cet effet n’existe pas.
+La raison pour laquelle nous avons opté pour ce seuil serait dû à une note de marge de Fischer associée à la proposition qu’il pourrait être intéressant de déterminer un seuil limite à partir duquel rejeter l’hypothèse nulle. La note de marge aurait été « Pourquoi pas 5% ? ».
+
+### Question 1
+
+*Réponses multiples autorisées*
+
+Some questions to verify that you understand the purposes of various base and recommended R packages:
+
+```{r quiz}
+quiz(
+  question("Un chercheur s’intéresse au temps de cuisson des pâtes dans l’eau non salée au niveau de la mer. Il décide de comparer ce temps de cuisson des pâtes dans l’eau non salée à 2km d’altitude. Il fait bouillir 100 casseroles de pâtes au niveau de la mer, dont il mesure le temps de cuisson, et il va faire bouillir 100 casseroles de pâtes à 2000 mètres d’altitude, dont il mesure également le temps de cuisson. Il obtient (en plus de 200 plâtrées de pâtes cuites à la perfection) une différence de 2mn54, différence associée dans un test t de Student à une valeur p de 0,02.",
+    answer("Au seuil alpha de 0,05 : Le chercheur peut conclure que les pâtes ne cuisent pas différemment entre la condition au niveau de la mer et la condition à 2000 mètres d’altitude."),
+    answer("Au seuil alpha de 0,01 : Le chercheur peut conclure que les pâtes ne cuisent pas différemment entre la condition au niveau de la mer et la condition à 2000 mètres d’altitude."),
+    answer("Au seuil alpha de 0,05 : Le chercheur peut conclure que les pâtes cuisent différemment entre la condition au niveau de la mer et la condition à 2000 mètres d’altitude.", correct = TRUE),
+    answer("Au seuil alpha de 0,01 : Le chercheur peut conclure que les pâtes cuisent différemment entre la condition au niveau de la mer et la condition à 2000 mètres d’altitude.")
+))
+```
+
+Ce système fonctionnerait bien s’il n’était pas facile de démontrer qu’un effet est significatif sur la seule base d’une valeur *p* significative. Malheureusement il est très simple de « diminuer » sa valeur *p* et, en conséquence, de faire enfler le risque d’erreur de type I dans nos recherches.
+
+Afin de diminuer la valeur *p* (et augmenter le risque d’erreurs de type 1, ou faux-positifs), les chercheurs peuvent mettre en place des mauvaises pratiques de recherche. Celles-ci peuvent sembler plus ou moins graves aux yeux des autres. On pourrait parler d’un nuancier de mauvaises pratiques de recherches. Par exemple, une façon très radicale d’obtenir une valeur *p* < .05 est tout simplement de modifier manuellement les données collectées pour accroître artificiellement la différence et nous permettre de conclure avec une valeur *p* < .05.
+Ce comportement s’appelle la fraude et est considéré de façon unanime comme étant la plus mauvaises des pratiques de recherche questionnables.
+
+Une autre solution un peu moins extrême est de multiplier les tests statistiques.
+
+
+Pomme de reinette fait un t-test pour s’assurer que les individus diffèrent en terme de réponses à un test de personnalité mesurant l’extraversion en fonction du nombre d’avions dans le ciel. Elle observe une valeur *p* inférieure a .05 ! Formidable, Pomme de Reinette va pouvoir publier sa découverte dans une grande revue !
+
+### Question 2
+
+```{r quiz2}
+quiz(
+  question("Mais au fait, quelle est la probabilité que Pomme de Reinette ait observé une valeur *p* < .05 si les avions n’influencent pas l’extraversion ?",
+    answer("Il y a moins de 5% de chance d’observer *p* < .05 si H0 est vrai", correct = TRUE),
+    answer("Il y a plus de 5% de chance d’observer *p* < .05 si H0 est vrai")
+))
+```
+
+
+### Question 3
+
+
+```{r text_box, echo = FALSE}
+question_text(
+  "Combien d’études Pomme de Reinette devrait elle mener pour rendre presque certain l’apparition d’un résultat semblable ou plus grand que celui observé en sachant que H0 est vraie ?",
+  answer("20", correct = TRUE, message = "Puisqu’il y a 5% de chance (1 chance sur 20) d’observer un tel résultat ou d’un résultat plus grand sachant que H0 est vraie, Pomme de Reinette serait presque sûr d’observer *p* < .05 si celle-ci menait 20 études."),
+  answer("Vingt", correct = TRUE, message = "Pour les exercices futurs, utilisez le format numérique (20 et non vingt). Puisqu’il y a 5% de chance (1 chance sur 20) d’observer un tel résultat ou d’un résultat plus grand sachant que H0 est vraie, Pomme de Reinette serait presque sûr d’observer *p* < .05 si celle-ci menait 20 études."),
+  answer("vingt", correct = TRUE, message = "Pour les exercices futurs, utilisez le format numérique (20 et non vingt). Puisqu’il y a 5% de chance (1 chance sur 20) d’observer un tel résultat ou d’un résultat plus grand sachant que H0 est vraie, Pomme de Reinette serait presque sûr d’observer *p* < .05 si celle-ci menait 20 études."),
+  allow_retry = TRUE,
+  placeholder = "Entrez un nombre (e.g., 1, 9, 876,...)",
+  incorrect = "Cette réponse est incorrecte ! Puisqu’il y a 5% de chance (1 chance sur 20) d’observer un tel résultat ou d’un résultat plus grand sachant que H0 est vraie, Pomme de Reinette serait presque sûr d’observer *p* < .05 si celle-ci menait 20 études."
+)
+```
+
+Malheureusement, les reviewers ne sont pas convaincu par sa découverte et demandent à Pomme de Reinette de répliquer sa découverte.
+
+
+
+```{r quiz3}
+quiz(
+  question("En sachant que l’hypothèse nulle est vraie (i.e., les avions dans le ciel n’influencent pas l’extraversion d’un individu), quelles sont les probabilités que Pomme de Reinette trouve de nouveau une valeur p inférieure à .05 ?",
+    answer("2.5%", message = "Nope. Il s'agit de multiplier la probabilité d'observer un résultat nul dans l'étude originale par la probabilité d'obtenir un résultat nul dans la réplication. Ici il s'agit donc de multiplier 5% par 5%, ce qui nous donne 0.05*0.05 = 0.0025 ou 0.25%"),
+    answer("10%", message = "Nope. Il s'agit de multiplier la probabilité d'observer un résultat nul dans l'étude originale par la probabilité d'obtenir un résultat nul dans la réplication. Ici il s'agit donc de multiplier 5% par 5%, ce qui nous donne 0.05*0.05 = 0.0025 ou 0.25%"),
+    answer("0,25%", correct = TRUE, message = "Effectivement ! Il s'agit de multiplier 5% par 5%, ce qui nous donne 0.05*0.05 = 0.0025 ou 0.25%"),
+    answer("0,10%", message = "Nope. Il s'agit de multiplier la probabilité d'observer un résultat nul dans l'étude originale par la probabilité d'obtenir un résultat nul dans la réplication. Ici il s'agit donc de multiplier 5% par 5%, ce qui nous donne 0.05*0.05 = 0.0025 ou 0.25%")
+))
+```
+
+
+Formidable, Pomme de Reinette a répliqué avec succès son étude ! Il y aurait moins d’une chance sur 400 de répliquer cette étude si l’effet à la base n’existait pas. Le reviewer qui lui avait demandé de répliquer se met à croire que les avions influencent bien la personnalité des individus !
+
+De son côté Pomme d’Api conduit une étude qui tend à montrer que les avions dans le ciel influencent l’extraversion des individus (lui aussi !... Décidemment). 
+Il met en place un protocole différent de celui de Pomme de Reinette ! Il utilise la même échelle qu’elle, mais il prend aussi une mesure du nombre de mots prononcés au cours d’un entretien, ainsi que la fluence verbale (nombre de mots prononcés par minute), il mesure la distance que met le participant entre lui et l’expérimentateur et enfin il demande au participant de s’auto-évaluer sur la base de sa propre extraversion.
+Pomme d’Api a donc cinq variables dépendantes (mesures) mesurant l’extraversion.
+
+Il observe que chez les individus mis en présence d’avions, ceux-ci ont une fluence verbale significativement plus rapide que chez les individus qui n’étaient pas mis en présence d’avion (p < .05).
+Là encore, la probabilité d’obtenir un tel résultat, sachant que H0 est vraie est inférieure à 5% !
+Mais la question la plus pertinente serait : 
+```{r quiz4}
+quiz(
+  question("quelle est la probabilité d’obtenir un valeur p < .05 quand on a 5 mesures ?",
+    answer("0.0000003125", message = "La réponse a correspond au calcul .05^5 qui renvoie à la probabilité d’observer une valeur p < .05 sur les 5 mesures en sachant H0 vraie ! Elle est extrêmement faible. Mais ce n’est pas la bonne réponse.
+La réponse d est intéressante car elle pourrait être correcte si les tests conduit étaient uni-latéraux (c’est à dire que la différence entre les deux groupes ne pouvaient aller que dans un sens, mais pas dans l’autre). 
+Quoi qu’il en soit, la réponse correcte est la B, qui correspond à .05*5. Il y a une chance sur 4 d’observer au moins une mesure sur laquelle la différence est significative."),
+    answer("0.25", correct = TRUE, message = "La réponse a correspond au calcul .05^5 qui renvoie à la probabilité d’observer une valeur p < .05 sur les 5 mesures en sachant H0 vraie ! Elle est extrêmement faible. Mais ce n’est pas la bonne réponse.
+La réponse d est intéressante car elle pourrait être correcte si les tests conduit étaient uni-latéraux (c’est à dire que la différence entre les deux groupes ne pouvaient aller que dans un sens, mais pas dans l’autre). 
+Quoi qu’il en soit, la réponse correcte est la B, qui correspond à .05*5. Il y a une chance sur 4 d’observer au moins une mesure sur laquelle la différence est significative.
+"),
+    answer(".05", message = "La réponse a correspond au calcul .05^5 qui renvoie à la probabilité d’observer une valeur p < .05 sur les 5 mesures en sachant H0 vraie ! Elle est extrêmement faible. Mais ce n’est pas la bonne réponse.
+La réponse d est intéressante car elle pourrait être correcte si les tests conduit étaient uni-latéraux (c’est à dire que la différence entre les deux groupes ne pouvaient aller que dans un sens, mais pas dans l’autre). 
+Quoi qu’il en soit, la réponse correcte est la B, qui correspond à .05*5. Il y a une chance sur 4 d’observer au moins une mesure sur laquelle la différence est significative.
+"),
+    answer(".5", message = "La réponse a correspond au calcul .05^5 qui renvoie à la probabilité d’observer une valeur p < .05 sur les 5 mesures en sachant H0 vraie ! Elle est extrêmement faible. Mais ce n’est pas la bonne réponse.
+La réponse d est intéressante car elle pourrait être correcte si les tests conduit étaient uni-latéraux (c’est à dire que la différence entre les deux groupes ne pouvaient aller que dans un sens, mais pas dans l’autre). 
+Quoi qu’il en soit, la réponse correcte est la B, qui correspond à .05*5. Il y a une chance sur 4 d’observer au moins une mesure sur laquelle la différence est significative.
+")
+))
+```
+
+Pomme d’Api décide de publier sa trouvaille dans une grande revue. Il ne présente que la mesure sur laquelle l’effet est apparu et se garde de mentionner les quatre autres mesures. 
+
+```{r quiz5}
+quiz(
+  question("Quel est le problème ?",
+    answer("Le reviewer se dira que Pomme d’Api avait moins de 5% de chance d’observer un tel résultat (ou un résultat plus fort encore) si les avions n’influencent pas l’extraversion, alors qu’en réalité, il avait 25% de chance d’observer cet effet.", correct = TRUE, message = "La réponse correcte est la A. Les réponses B et C ne sont pas nécessairement fausses, mais elles ne sont pas nécessairement vraies non plus."),
+    answer("Le reviewer se dira que la mesure de Pomme d’Api est une bonne mesure alors que ce n’est pas le cas.", message ="La réponse correcte est la A. Les réponses B et C ne sont pas nécessairement fausses, mais elles ne sont pas nécessairement vraies non plus."),
+    answer("Le reviewer se dira que Pomme d’Api a validé sa mesure dans cette étude, alors qu’en réalité il n’y a pas eu de validation de la mesure faite.", message= "La réponse correcte est la A. Les réponses B et C ne sont pas nécessairement fausses, mais elles ne sont pas nécessairement vraies non plus.")
+))
+```
+
+
+## Passons à la console R
+
+*Here's a simple exercise with an empty code chunk provided for entering the answer.*
+
+Write the R code required to add two plus two:
+
+```{r two-plus-two, exercise=TRUE}
+
+```
+
+### Exercise with Code
+
+*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+
+Now write a function that adds any two numbers and then call it:
+
+```{r add-function, exercise=TRUE, exercise.lines = 5}
+add <- function() {
+  
+}
+```
+
+
+
+### Exercise with Hint
+
+*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+
+Modify the following code to limit the number of rows printed to 5:
+
+```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
+mtcars
+```
+
+```{r print-limit-hint}
+head(mtcars)
+```
+
+
+
