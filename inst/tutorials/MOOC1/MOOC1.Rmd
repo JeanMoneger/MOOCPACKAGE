@@ -138,42 +138,258 @@ quiz(
 
 
 ## Passons à la console R
+Nous allons maintenant essayé de modéliser les résultats de Pomme de Reinette et Pomme d’Api.
 
-*Here's a simple exercise with an empty code chunk provided for entering the answer.*
+## Les études de nos deux jumbologues
 
-Write the R code required to add two plus two:
+Pomme de Reinette et Pomme d’Api réalisent chacun 1000 études ! Chacune de ces études compare 100 participants en condition « avion » (les participants sont testés dans un aéroport) à 100 autres participants dans une condition contrôle (les participants sont testés dans une gare routière). La mesure dépendante est le quotient intellectuel (dont la moyenne dans la population générale est 100 et l’écart-type 15). Ils font l’hypothèse que la présence d’avions dans l’environnement influencera la mesure du quotient intellectuel.
 
-```{r two-plus-two, exercise=TRUE}
+Ils ne le savent pas, mais l’effet n’existe pas : les avions n’influencent nullement le quotient intellectuel. Aussi ils comparent dans chaque étude 100 participants issus d’une population ayant un quotient intellectuel moyen de 100 avec un écart-type de 15 à 100 participants issus de la même population (moyenne de QI = 100, écart-type de 15).
 
-```
+Parce qu’il y a de la variance dans la mesure du QI dû 1) à la variance naturelle du construit théorique du QI (incarné dans l’écart-type de 15 : il est possible que dans une étude, le groupe contrôle soit constitué, par malheur, de participant.e.s brillant.e.s tandis que, par malchance, en groupe « avion », les participant.e.s sont des enfants de 7 ans : on parle d’erreur d’échantillonage) et 2) à la variance d’erreur qui existe dans la mesure du QI (le test n’est pas parfait et certaines instructions peuvent ne pas être comprises de la même manière par tou.te.s). Ainsi il est possible que, par erreur, une étude détecte un effet, une différence entre nos deux groupes, mais que cela soit dû à de l’erreur d’échantillonage et de l’erreur de mesure.
 
-### Exercise with Code
+###Du côté de Pomme de Reinette :
+Pomme de Reinette réalise 1000 études, chacune comparant 100 participants avec 100 autres participants
+Dans aucune de ces études un effet n'apparaît : les moyennes entre les deux groupes sont en réalité identiques
+Mais ça pomme de Reinette ne le sait pas. Et comme il y a de la variance (écart-type) et des possibles erreurs d'échantillonage
+Il est possible d'observer par HASARD une grande différence.
 
-*Here's an exercise with some prepopulated code as well as `exercise.lines = 5` to provide a bit more initial room to work.*
+Dans le code suivant, on définit d'abord le nombre d'études simulées, puis l'on simule Nsims études comparant deux groupes (X et Y) tous deux issus de la même population (moyenne = 100 et écart-type = 15). On fait ensuite un test statistique (en l'occurence un t-test) comparant les deux groupes identiques.
 
-Now write a function that adds any two numbers and then call it:
+La ligne commencant par "hist" sert à afficher un histogramme représentant la distribution des valeurs *p* issues de nos 1000 études. 
+Enfin, la dernière ligne calcule la proportion de valeurs *p* inférieures à 5%
 
-```{r add-function, exercise=TRUE, exercise.lines = 5}
-add <- function() {
-  
+Cliquez sur le bouton "run code" pour afficher le résultat de notre simulation.
+N'hésitez pas à modifier des paramètres, comme le nombre d'études prises en compte (l. 3) ou encore les moyennes des groupes et leurs écart-types pour expérimenter (pour retrouver les réglages d'origines, cliquez sur "start over")
+
+Les résultats reposent sur le hasard (ce sont des simulations aléatoires), n'hésitez pas à cliquer sur le bouton "start over" pour obtenir d'autres résultats.
+
+```{r Hist, exercise = TRUE}
+if(!require(psych)){install.packages('psych')}
+
+#Commencons par une grosse simulation qui risque de prendre du temps.
+nSims <- 1000 # Le nombre d'études que nous allons simuler
+p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries
+
+#Simulons des études sans effet.
+for(i in 1:nSims){ 
+  x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 100
+  y<-rnorm(n = 100, mean = 100, sd = 15) #Deuxième groupe de 100 pariticipants, moyenne = 100 ==> Aucune différence !
+  z<-t.test(x,y) # On fait un t-test sur les mêmes données
+  p[i]<-z$p.value # On conserve la p-value de chaque t-test
 }
+
+# Réalisation d'un histogramme :
+hist(p, 20)
+abline(v = .05, col = "red" )
+p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
+(sum(p < 0.05)/nSims) # Pourcentage de p significatives
+```
+
+
+```{r quiz6}
+quiz(
+  question("Comme nous le voyons dans l’histogramme qui apparaît , la distribution est :",
+    answer("descendante : il y a une majorité de valeurs p faibles"),
+    answer("ascendante : il y a une majorité de valeurs p fortes"),
+    answer("plate : chaque valeur p semble équiprobable", correct = TRUE),
+    answer("en forme de cloche : il y a une majorité de valeur p moyennes, et les autres valeurs p se répartissent de part et d’autre de cette moyenne")
+))
+```
+Regardons le résultat de la dernière ligne "sum(p < 0.05)/nSims"
+
+```{r quiz7}
+quiz(
+  question("Quelle proportion de valeur p est significative ?",
+    answer("Approximativement 0%"),
+    answer("Approximativement 5%", correct = TRUE),
+    answer("Approximativement 10%"),
+    answer("L’intégralité des valeurs p")
+))
+```
+
+###Du côté de Pomme d'Api
+
+Poursuivons du côté de Pomme d’Api.
+Nous pouvons décomposer sa routine de la manière suivante :
+Il fait 5 (i.e., le nombre de variables dépendantes qu’il a pris) fois 1000 tests (i.e., le nombre d’études) d’un effet nul. Donc 5000 tests sont réalisés en tout.
+Il conserve toutes les valeurs p-significatives.
+
+Changez le nombre d'études (l.2) pour correspondre au nombre de tests réalisés.
+
+```{r Hist2, exercise = TRUE}
+#Changeons donc le nombre d'études simulées :
+nSims <- 1000
+
+#Simulons des études sans effet.
+for(i in 1:nSims){ 
+  x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 100
+  y<-rnorm(n = 100, mean = 100, sd = 15) #Deuxième groupe de 100 pariticipants, moyenne = 100 ==> Aucune différence !
+  z<-t.test(x,y) # On fait un t-test sur les mêmes données
+  p[i]<-z$p.value # On conserve la p-value de chaque t-test
+}
+
+
+# Réalisation d'un histogramme :
+hist(p, 20)
+abline(v = .05, col = "red" )
+p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
+(sum(p < 0.05)/nSims) # Pourcentage de p significatives
+
+```
+
+
+```{r quiz8}
+quiz(
+  question("Quelle proportion de valeur p est significative ?",
+    answer("Approximativement 0%"),
+    answer("Approximativement 5%", correct = TRUE),
+    answer("Approximativement 10%"),
+    answer("L’intégralité des valeurs p")
+))
+```
+
+Toujours 5%. Mais 5% de 5000 est supérieur à 5% de 1000. En entrant dans la console précédente sum(p<.05), vous pouvez voir le nombre exact de valeur p significatives sur l’ensemble des 5000 tests.
+Alors si celui-ci conclue qu’il a seulement 5% de faux positifs sur la base de 1000 études, il se trompera. 
+
+Corrigez la proportion de faux positifs quand l'on prend en compte 1000 études dans le code suivant :
+```{r Hist3, exercise = TRUE}
+#Changeons donc le nombre d'études simulées :
+nSims <- 1000
+
+#Simulons des études sans effet.
+for(i in 1:nSims){ 
+  x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 100
+  y<-rnorm(n = 100, mean = 100, sd = 15) #Deuxième groupe de 100 pariticipants, moyenne = 100 ==> Aucune différence !
+  z<-t.test(x,y) # On fait un t-test sur les mêmes données
+  p[i]<-z$p.value # On conserve la p-value de chaque t-test
+}
+
+
+# Réalisation d'un histogramme :
+hist(p, 20)
+abline(v = .05, col = "red" )
+p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
+sum(p < 0.05)/___ # Pourcentage de p significatives rapportées sur 1000 études
+
+```
+
+```{r Hist3-hint}
+sum(p < 0.05)/1000
+```
+
+```{r quiz9}
+quiz(
+  question("En corrigeant pour cette erreur, on peut voir que sur 1000 études (L. 54), la propotion de faux positifs est :",
+    answer("Approximativement 5%"),
+    answer("Approximativement 10%"),
+    answer("Approximativement 25%", correct=TRUE),
+    answer("Approximativement 50%")
+))
 ```
 
 
 
-### Exercise with Hint
+### Allons plus loin
 
-*Here's an exercise where the chunk is pre-evaulated via the `exercise.eval` option (so the user can see the default output we'd like them to customize). We also add a "hint" to the correct solution via the chunk immediate below labeled `print-limit-hint`.*
+Amusons nous un peu. Dans la console suivante, vous pouvez modifier la valeur de la différence observée à la ligne 7 et 8. Ainsi vous pouvez simuler un effet qui existe.
+À la ligne 8, à la place de « mean = 100 » mettez la valeur « mean = 102 ». 
 
-Modify the following code to limit the number of rows printed to 5:
+```{r Hist4, exercise = TRUE}
+if(!require(psych)){install.packages('psych')}
 
-```{r print-limit, exercise=TRUE, exercise.eval=TRUE}
-mtcars
+#Commencons par une grosse simulation qui risque de prendre du temps.
+nSims <- 1000 # Le nombre d'études que nous allons simuler
+p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries
+
+#Simulons des études sans effet.
+for(i in 1:nSims){ 
+  x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 102
+  y<-rnorm(n = 100, mean = 100, sd = 15) #Deuxième groupe de 100 pariticipants, moyenne = 100 ==> différence !
+  z<-t.test(x,y) # On fait un t-test sur les mêmes données
+  p[i]<-z$p.value # On conserve la p-value de chaque t-test
+}
+
+# Réalisation d'un histogramme :
+hist(p, 20)
+abline(v = .05, col = "red" )
+p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
+(sum(p < 0.05)/nSims) # Pourcentage de p significatives
 ```
 
-```{r print-limit-hint}
-head(mtcars)
+Désormais, notre effet existe : les avions augmentent de 2 points le QI. On peut estimer sa taille en calculant d = (Moyenne groupe 1 – Moyenne groupe 2)/SDpool
+SD pool renvoie à l’écart type de l’ensemble de l’échantillon quelque soit le groupe. Ici l’écart type est fixé à la ligne 16 et 17 à une valeur de 15.
+
+```{r quiz10}
+quiz(
+  question("Quelle est la taille d’effet ?",
+    answer("d = 0.13", correct=TRUE),
+    answer("d = 0.24"),
+    answer("d = 0.35"),
+    answer("d = 0.46")
+))
+```
+C’est un petit effet. Mais c’est un effet malgré tout !
+
+```{r quiz11}
+quiz(
+  question("À quoi ressemble désormais la distribution des valeurs p ?",
+    answer("descendante : il y a une majorité de valeurs p faibles", correct = TRUE),
+    answer("ascendante : il y a une majorité de valeurs p fortes"),
+    answer("plate : chaque valeur p semble équiprobable"),
+    answer("en forme de cloche : il y a une majorité de valeur p moyennes, et les autres valeurs p se répartissent de part et d’autre de cette moyenne")
+))
 ```
 
+Ligne 21, nous avons la proportions de valeurs p < .05. Cette fois ci, cette commande n’indique plus le pourcentage de faux positifs (détecter un effet qui n’existe pas comme significatif), mais la proportion de vrai positifs : Le pourcentage d’études qui ont correctement identifier comme significatif le léger accroissement du QI causé par la présence des avions ! Cette proportion d’études correspond à la Puissance Statistique. Nous reviendrons très vite sur ce concept très important !
+
+Amusons nous plus encore. Essayons un meilleur effet : Les avions augmentent en réalité le QI, non plus de 2 points, mais cette fois-ci de 6 points ! Incroyable, non ? Modifiez la ligne correspondant à la moyenne du groupe X pour rendre compte dans nos simulations de cet effet. 
+
+```{r Hist5, exercise = TRUE}
+if(!require(psych)){install.packages('psych')}
+
+#Commencons par une grosse simulation qui risque de prendre du temps.
+nSims <- 1000 # Le nombre d'études que nous allons simuler
+p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries
+
+#Simulons des études sans effet.
+for(i in 1:nSims){ 
+  x<-rnorm(n = 100, mean = ___, sd = 15) #Le premier groupe de 100 participants, moyenne = 106
+  y<-rnorm(n = 100, mean = 100, sd = 15) #Deuxième groupe de 100 pariticipants, moyenne = 100 ==>  différence !
+  z<-t.test(x,y) # On fait un t-test sur les mêmes données
+  p[i]<-z$p.value # On conserve la p-value de chaque t-test
+}
+
+# Réalisation d'un histogramme :
+hist(p, 20)
+abline(v = .05, col = "red" )
+p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
+(sum(p < 0.05)/nSims) # Pourcentage de p significatives
+```
+
+```{r Hist5-hint}
+x<-rnorm(n = 100, mean = 106, sd = 15)
+```
+
+
+
+```{r quiz12}
+quiz(
+  question("Quelle est la taille d’effet cette fois-ci ?",
+    answer("d = 0.2"),
+    answer("d = 0.4", correct=TRUE),
+    answer("d = 0.6"),
+    answer("d = 0.8")
+))
+```
+
+```{r quiz13}
+quiz(
+  question("Dans cette dernière simulation, que constatez-vous ?",
+    answer("la pente s’est creusée : il y a plus de valeurs p qui sont plus faibles que .05", correct = TRUE),
+    answer("la pente n’a pas changée: il y a autant de valeurs p qui sont plus faibles que .05"),
+    answer("la pente s’est aplatie: il y a moins de valeurs p qui sont plus faibles que .05")
+))
+```
 
 
