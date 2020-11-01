@@ -32,7 +32,6 @@ La raison pour laquelle nous avons opté pour ce seuil serait dû à une note de
 
 *Réponses multiples autorisées*
 
-Some questions to verify that you understand the purposes of various base and recommended R packages:
 
 ```{r quiz}
 quiz(
@@ -165,8 +164,6 @@ N'hésitez pas à modifier des paramètres, comme le nombre d'études prises en 
 Les résultats reposent sur le hasard (ce sont des simulations aléatoires), n'hésitez pas à cliquer sur le bouton "start over" pour obtenir d'autres résultats.
 
 ```{r Hist, exercise = TRUE}
-if(!require(psych)){install.packages('psych')}
-
 #Commencons par une grosse simulation qui risque de prendre du temps.
 nSims <- 1000 # Le nombre d'études que nous allons simuler
 p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries
@@ -220,7 +217,7 @@ Changez le nombre d'études (l.2) pour correspondre au nombre de tests réalisé
 ```{r Hist2, exercise = TRUE}
 #Changeons donc le nombre d'études simulées :
 nSims <- 1000
-
+p<-numeric(nSims)
 #Simulons des études sans effet.
 for(i in 1:nSims){ 
   x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 100
@@ -256,7 +253,7 @@ Corrigez la proportion de faux positifs quand l'on prend en compte 1000 études 
 ```{r Hist3, exercise = TRUE}
 #Changeons donc le nombre d'études simulées :
 nSims <- 1000
-
+p<-numeric(nSims)
 #Simulons des études sans effet.
 for(i in 1:nSims){ 
   x<-rnorm(n = 100, mean = 100, sd = 15) #Le premier groupe de 100 participants, moyenne = 100
@@ -265,13 +262,11 @@ for(i in 1:nSims){
   p[i]<-z$p.value # On conserve la p-value de chaque t-test
 }
 
-
 # Réalisation d'un histogramme :
 hist(p, 20)
 abline(v = .05, col = "red" )
 p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
 sum(p < 0.05)/___ # Pourcentage de p significatives rapportées sur 1000 études
-
 ```
 
 ```{r Hist3-hint}
@@ -296,8 +291,6 @@ Amusons nous un peu. Dans la console suivante, vous pouvez modifier la valeur de
 À la ligne 8, à la place de « mean = 100 » mettez la valeur « mean = 102 ». 
 
 ```{r Hist4, exercise = TRUE}
-if(!require(psych)){install.packages('psych')}
-
 #Commencons par une grosse simulation qui risque de prendre du temps.
 nSims <- 1000 # Le nombre d'études que nous allons simuler
 p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries
@@ -346,8 +339,6 @@ Ligne 21, nous avons la proportions de valeurs p < .05. Cette fois ci, cette com
 Amusons nous plus encore. Essayons un meilleur effet : Les avions augmentent en réalité le QI, non plus de 2 points, mais cette fois-ci de 6 points ! Incroyable, non ? Modifiez la ligne correspondant à la moyenne du groupe X pour rendre compte dans nos simulations de cet effet. 
 
 ```{r Hist5, exercise = TRUE}
-if(!require(psych)){install.packages('psych')}
-
 #Commencons par une grosse simulation qui risque de prendre du temps.
 nSims <- 1000 # Le nombre d'études que nous allons simuler
 p<-numeric(nSims) # Une boîte vide pour recevoir nos valeurs p chéries

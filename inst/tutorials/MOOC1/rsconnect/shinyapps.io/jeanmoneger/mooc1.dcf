@@ -1,0 +1,10 @@
+name: mooc1
+title:
+username:
+account: jeanmoneger
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3138832
+bundleId: 3807051
+url: https://jeanmoneger.shinyapps.io/mooc1/
+when: 1604239747.24273
