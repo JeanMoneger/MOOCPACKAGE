@@ -136,8 +136,9 @@ quiz(
 ```
 
 
-## Passons à la console R
+### Passons à la console R
 Nous allons maintenant essayé de modéliser les résultats de Pomme de Reinette et Pomme d’Api.
+Cliquez "Next Topic"
 
 ## Les études de nos deux jumbologues
 
