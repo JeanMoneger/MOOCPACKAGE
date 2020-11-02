@@ -5,6 +5,6 @@ account: jeanmoneger
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3138832
-bundleId: 3807184
+bundleId: 3810824
 url: https://jeanmoneger.shinyapps.io/mooc1/
-when: 1604243932.64575
+when: 1604324918.10269
