@@ -217,7 +217,7 @@ Changez le nombre d'études (l.2) pour correspondre au nombre de tests réalisé
 
 ```{r Hist2, exercise = TRUE}
 #Changeons donc le nombre d'études simulées :
-nSims <- ______ #Nombre d'études menées
+nSims <- ___ #Nombre d'études menées
 p<-numeric(nSims)
 #Simulons des études sans effet.
 for(i in 1:nSims){ 
