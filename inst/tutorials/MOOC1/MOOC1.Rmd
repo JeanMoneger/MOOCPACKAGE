@@ -217,7 +217,7 @@ Changez le nombre d'études (l.2) pour correspondre au nombre de tests réalisé
 
 ```{r Hist2, exercise = TRUE}
 #Changeons donc le nombre d'études simulées :
-nSims <- 1000
+nSims <- ______ #Nombre d'études menées
 p<-numeric(nSims)
 #Simulons des études sans effet.
 for(i in 1:nSims){ 
@@ -233,6 +233,10 @@ hist(p, 20)
 abline(v = .05, col = "red" )
 p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibles !
 (sum(p < 0.05)/nSims) # Pourcentage de p significatives
+
+```
+```{r Hist2-hint}
+nSims <- 5000 #Nombre d'études menées
 
 ```
 
@@ -253,7 +257,7 @@ Alors si celui-ci conclue qu’il a seulement 5% de faux positifs sur la base de
 Corrigez la proportion de faux positifs quand l'on prend en compte 1000 études dans le code suivant :
 ```{r Hist3, exercise = TRUE}
 #Changeons donc le nombre d'études simulées :
-nSims <- 1000
+nSims <- 5000
 p<-numeric(nSims)
 #Simulons des études sans effet.
 for(i in 1:nSims){ 
@@ -289,7 +293,7 @@ quiz(
 ### Allons plus loin
 
 Amusons nous un peu. Dans la console suivante, vous pouvez modifier la valeur de la différence observée à la ligne 7 et 8. Ainsi vous pouvez simuler un effet qui existe.
-À la ligne 8, à la place de « mean = 100 » mettez la valeur « mean = 102 ». 
+À la ligne 7, à la place de « mean = 100 » mettez la valeur « mean = 102 ». 
 
 ```{r Hist4, exercise = TRUE}
 #Commencons par une grosse simulation qui risque de prendre du temps.
@@ -311,6 +315,13 @@ p[which(p<.05)] # Afficher les valeurs de p < .05. Certaines sont vraiment faibl
 (sum(p < 0.05)/nSims) # Pourcentage de p significatives
 ```
 
+
+```{r Hist4-hint}
+
+  x<-rnorm(n = 100, mean = 102, sd = 15) #Le premier groupe de 100 participants, moyenne = 102
+
+
+```
 Désormais, notre effet existe : les avions augmentent de 2 points le QI. On peut estimer sa taille en calculant d = (Moyenne groupe 1 – Moyenne groupe 2)/SDpool
 SD pool renvoie à l’écart type de l’ensemble de l’échantillon quelque soit le groupe. Ici l’écart type est fixé à la ligne 16 et 17 à une valeur de 15.
 
